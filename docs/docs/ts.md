@@ -1,14 +1,15 @@
-#　TS笔记
+# TS笔记
+
 
 ## 【1】概述
 
-```tex
 [1] 简介
+
 TypeScript 由微软开发，是基于JavaScript的⼀个扩展语⾔。TypeScript包含了JavaScript 的所有内容，即：TypeScript是JavaScrip的超集。TypeScript 增加了：静态类型检查、接⼝、泛型等很多现代开发特性，更适合⼤型项⽬的开发。TypeScript 需要编译为 JavaScript ，然后交给浏览器或其他 JavaScript 运⾏环境执⾏
 
 [2] 静态类型检查
+
 在代码运⾏前进⾏检查，发现代码的错误或不合理之处，减⼩运⾏时出现异常的⼏率，此种检查叫『静态类型检查』，TypeScript 和核⼼就是『静态类型检查』，简⾔之就是把运⾏时的错误前置。同样的功能，TypeScript 的代码量要⼤于 JavaScript，但由于 TypeScript 的代码结构更加清晰，在后期代码的维护中 TypeScript 却胜于 JavaScript
-```
 
 ## 【2】优势
 
@@ -440,7 +441,7 @@ walk('left')
 walk('right')
 ```
 
-```
+```ts
 enum Direction {
     Up,
     Down,
@@ -631,9 +632,235 @@ const f3: LogFunc = function () {
 }
 ```
 
-## 【】abstract  
+## 【25】es6 - 类
+
+```js
+class Person {
+    // 属性声明
+    name: string
+    age: number
+    // 构造器
+    constructor(name: string, age: number) {
+        this.name = name
+        this.age = age
+    }
+    // ⽅法
+    speak() {
+        console.log(`我叫：${this.name}，今年${this.age}岁`)
+    }
+}
+// Person实例
+const p1 = new Person('周杰伦', 38)
+```
+
+```js
+class Student extends Person {
+    grade: string
+    // 构造器
+    constructor(name: string, age: number, grade: string) {
+        super(name, age)
+        this.grade = grade
+    }
+    // 备注本例中若Student类不需要额外的属性，Student的构造器可以省略
+    // 重写从⽗类继承的⽅法
+    override speak() {
+        console.log(`我是学⽣，我叫：${this.name}，今年${this.age}岁，在读${this.grade}年级`,)
+    }
+    // ⼦类⾃⼰的⽅法
+    study() {
+        console.log(`${this.name}正在努⼒学习中......`)
+    }
+}
+```
+
+## 【27】属性修饰符  
+
+| 修饰符    | 含义     | 具体规则                            |
+| --------- | -------- | ----------------------------------- |
+| public    | 公开的   | 可以被：类内部、⼦类、类外部访问 。 |
+| protected | 受保护的 | 可以被：类内部、⼦类访问。          |
+| private   | 私有的   | 可以被：类内部访问。                |
+| readonly  | 只读属性 | 属性⽆法修改。                      |
+
+## 【28】public
+
+```ts
+class Person {
+    // name写了public修饰符，age没写修饰符，最终都是public修饰符
+    public name: string
+    age: number
+    constructor(name: string, age: number) {
+        this.name = name
+        this.age = age
+    }
+    speak() {
+        // 类的【内部】可以访问public修饰的name和age
+        console.log(`我叫：${this.name}，今年${this.age}岁`)
+    }
+}
+const p1 = new Person('张三', 18)
+// 类的【外部】可以访问public修饰的属性
+console.log(p1.name)
+```
+
+```ts
+lass Student extends Person {
+    constructor(name: string, age: number) {
+        super(name, age)
+    }
+    study() {
+        // 【⼦类中】可以访问⽗类中public修饰的：name属性、age属性
+        console.log(`${this.age}岁的${this.name}正在努⼒学习`)
+    }
+}
+```
+
+属性的完整写法
+
+```ts
+class Person {
+    public name: string;
+    public age: number;
+    constructor(name: string, age: number) {
+        this.name = name;
+        this.age = age;
+    }
+}
+```
+
+属性的简写形式
+
+```ts
+class Person {
+    constructor(
+        public name: string,
+        public age: number
+    ) { }
+}
+```
+
+## 【29】protected 
+
+```ts
+class Person {
+    // name和age是受保护属性，不能在类外部访问，但可以在【类】与【⼦类】中访问
+    constructor(
+        protected name: string,
+        protected age: number
+    ) {}
+    // getDetails是受保护⽅法，不能在类外部访问，但可以在【类】与【⼦类】中访问
+    protected getDetails(): string {
+        // 类中能访问受保护的name和age属性
+        return `我叫：${this.name}，年龄是：${this.age}`
+    }
+    // introduce是公开⽅法，类、⼦类、类外部都能使⽤
+    introduce() {
+        // 类中能访问受保护的getDetails⽅法
+        console.log(this.getDetails());
+    }
+}
+const p1 = new Person('杨超越',18)
+// 可以在类外部访问introduce
+p1.introduce()
+// 以下代码均报错
+// p1.getDetails()
+// p1.name
+// p1.age
+```
+
+```ts
+class Student extends Person {
+    constructor(name:string,age:number){
+        super(name,age)
+    }
+    study(){
+        // ⼦类中可以访问introduce
+        this.introduce()
+        // ⼦类中可以访问name
+        console.log(`${this.name}正在努⼒学习`)
+    }
+}
+const s1 = new Student('tom',17)
+s1.introduce()
+```
+
+## 【30】private
+
+```ts
+class Person {
+    constructor(
+        public name: string,
+        public age: number,
+        // IDCard属性为私有的(private)属性，只能在【类内部】使⽤
+        private IDCard: string
+    ) { }
+    private getPrivateInfo(){
+        // 类内部可以访问私有的(private)属性 —— IDCard
+        return `身份证号码为：${this.IDCard}`
+    }
+    getInfo() {
+        // 类内部可以访问受保护的(protected)属性 —— name和age
+        return `我叫: ${this.name}, 今年刚满${this.age}岁`;
+    }
+    getFullInfo(){
+        // 类内部可以访问公开的getInfo⽅法，也可以访问私有的getPrivateInfo⽅法
+        return this.getInfo() + '，' + this.getPrivateInfo()
+    }
+}
+const p1 = new Person('张三',18,'110114198702034432')
+console.log(p1.getFullInfo())
+console.log(p1.getInfo())
+// 以下代码均报错
+// p1.name
+// p1.age
+// p1.IDCard
+// p1.getPrivateInfo()
+```
+
+## 【31】readonly
+
+```ts
+class Car {
+    constructor(
+        public readonly vin: string, //⻋辆识别码，为只读属性
+        public readonly year: number,//出⼚年份，为只读属性
+        public color: string,
+        public sound: string
+    ) { }
+    // 打印⻋辆信息
+    displayInfo() {
+        console.log(`
+        识别码：${this.vin},
+        出⼚年份：${this.year},
+        颜⾊：${this.color},
+        ⾳响：${this.sound}
+        `);
+    }
+}
+const car = new Car('1HGCM82633A123456', 2018, '⿊⾊', 'Bose⾳响');
+car.displayInfo()
+// 以下代码均错误：不能修改 readonly 属性
+// car.vin = '897WYE87HA8SGDD8SDGHF';
+// car.year = 2020;
+```
+
+## 【32】abstract  
+
+[1] 概述
 
 抽象类是⼀种⽆法被实例化的类，专⻔⽤来定义类的结构和⾏为。抽象类不能实例化，其意义是可以被继承，抽象类⾥可以有普通⽅法、也可以有抽象⽅法。
+
+[2] 使用场景
+
+定义通用接口 ：为⼀组相关的类定义通⽤的⾏为（⽅法或属性）时。
+
+提供基础实现 ：在抽象类中提供某些⽅法或为其提供基础实现，这样派⽣类就可以继承这些实现。
+
+确保关键实现 ：强制派⽣类实现⼀些关键⾏为。
+
+代码和逻辑：当多个类需要共享部分代码时，抽象类可以避免代码重复
+
+[3] 举例
 
 我们定义⼀个抽象类 Package ，表示所有包裹的基本结构，任何包裹都有重量属性 weight，包裹都需要计算运费。但不同类型的包裹（如：标准速度、特快专递）都有不同的运费计算⽅式，因此⽤于计算运费的 calculate ⽅法是⼀个抽象⽅法，必须由具体的⼦类来实现
 
@@ -691,18 +918,19 @@ const e1 = new ExpressPackage(13,8,2)
 e1.printPackage()
 ```
 
+## 【34】interface - 定义类结构  
 
+[1] 简介
 
-## 【】interface - 定义类结构  
+interface 是⼀种定义结构的⽅式，主要作⽤是为：类、对象、函数等规定⼀种契约，这样可以确保代码的⼀致性和类型安全，但要注意 interface 只能定义格式，不能包含任何实现
 
-一、interface 是⼀种定义结构的⽅式，主要作⽤是为：类、对象、函数等规定⼀种契约，这样可以确保代码的⼀致性和类型安全，但要注意 interface 只能定义格式，不能包含任何实现
+[2] 使用场景
 
-二、何时使⽤ interface？
+定义对象的格式： 描述数据模型、API 响应格式、配置对象........等等，是开发中⽤的最多的场景。
 
-1. 定义对象的格式： 描述数据模型、API 响应格式、配置对象........等等，是开发中⽤的最多
-   的场景
-2. 类的契约：规定⼀个类需要实现哪些属性和⽅法
-3. 扩展已有接⼝：⼀般⽤于扩展第三⽅库的类型， 这种特性在⼤型项⽬中可能会⽤到
+类的契约：规定⼀个类需要实现哪些属性和⽅法。
+
+扩展已有接⼝：⼀般⽤于扩展第三⽅库的类型， 这种特性在⼤型项⽬中可能会⽤到。
 
 ```   ts
 // PersonInterface接⼝，⽤与限制Person类的格式
@@ -730,7 +958,7 @@ const p1 = new Person('tom', 18);
 p1.speak(3)
 ```
 
-## 【】interface - 定义对象结构 
+## 【35】interface - 定义对象结构 
 
 ```ts
 interface UserInterface {
@@ -750,7 +978,7 @@ const user: UserInterface = {
 };
 ```
 
-## 【】interface - 定义函数结构  
+## 【36】interface - 定义函数结构  
 
 ```ts
 interface CountInterface {
@@ -762,7 +990,7 @@ const count: CountInterface = (x, y) => {
 }
 ```
 
-## 【】interface - 继承
+## 【37】interface - 继承
 
 ⼀个 interface 继承另⼀个 interface ，从⽽实现代码的复⽤  
 
@@ -781,7 +1009,7 @@ const stu: StudentInterface = {
 }
 ```
 
-接口⼝⾃动合并（可重复定义）  
+接口⾃动合并（可重复定义）  
 
 ```ts
 interface PersonInterface {
@@ -810,7 +1038,7 @@ class Person implements PersonInterface {
 }
 ```
 
-## 【】interface / type 区别
+## 【38】interface / type 区别
 
 相同点：
 
@@ -904,15 +1132,17 @@ const student: StudentType = {
 };
 ```
 
-## 【】interface 与 抽象类的区别
+## 【39】interface / abstract 区别
 
-相同点：都能定义⼀个类的格式（定义类应遵循的契约）
+相同点：
+
+都能定义⼀个类的格式（定义类应遵循的契约）
 
 不同点：
 
-接⼝只能描述结构，不能有任何实现代码，⼀个类可以实现多个接⼝。
+接⼝只能描述结构，不能有任何实现代码，⼀个类可以实现多个接⼝
 
-抽象类既可以包含抽象⽅法，也可以包含具体⽅法， ⼀个类只能继承⼀个抽象类。
+抽象类既可以包含抽象⽅法，也可以包含具体⽅法， ⼀个类只能继承⼀个抽象类
 
 
 
@@ -942,7 +1172,7 @@ duck.fly(); // 输出: 鸭⼦可以⻜
 duck.swim(); // 输出: 鸭⼦可以游泳
 ```
 
-## 【】泛型 - 函数 
+## 【40】泛型 - 函数 
 
 泛型允许我们在定义函数、类或接⼝时，使⽤类型参数来表示未指定的类型，这些参数在具体使⽤时，才被指定具体的类型，泛型能让同⼀段代码适⽤于多种类型，同时仍然保持类型的安全性
 
@@ -966,7 +1196,7 @@ logData<number, string>(100, 'hello')
 logData<string, boolean>('ok', false)
 ```
 
-## 【】泛型 - 接口
+## 【41】泛型 - 接口
 
 ```ts
 interface PersonInterface<T> {
@@ -980,7 +1210,7 @@ p1 = { name: '张三', age: 18, extraInfo: '⼀个好⼈' }
 p2 = { name: '李四', age: 18, extraInfo: 250 }
 ```
 
-## 【】泛型 - 约束
+## 【42】泛型 - 约束
 
 ```ts
 interface LengthInterface {
@@ -995,7 +1225,7 @@ logPerson<string>('hello')
 // logPerson<number>(100)
 ```
 
-## 【】泛型 - 类
+## 【43】泛型 - 类
 
 ```ts
 class Person<T> {
@@ -1019,7 +1249,7 @@ type JobInfo = {
 const p2 = new Person<JobInfo>("tom", 30, { title: '研发总监', company: '发发发科技公司' });
 ```
 
-## 【】 类型声明⽂件 - .d.ts 
+## 【44】 类型声明⽂件 - .d.ts 
 
 类型声明⽂件是 TypeScript 中的⼀种特殊⽂件，通常以 .d.ts 作为扩展名。它的主要作⽤是为现有的 JavaScript 代码提供类型信息，使得 TypeScript 能够在使⽤这些 JavaScript 库或模块时进⾏类型检查和提示
 

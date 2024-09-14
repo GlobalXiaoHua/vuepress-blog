@@ -7,34 +7,45 @@ export default defineUserConfig({
   bundler: viteBundler(),
   theme: defaultTheme({
     navbar: [
-        {text: '简介',link: '/front/ts',},
         {
-        text: '分类',
+        text: '前端笔记',
             children: [
-            {
-            text: '建站相关',
-            children: ['/server/php/', '/server/python/'],
-            },
-           {
-            text: '个人随笔',
-            children: ['/personal/game/', '/personal/pc/'],
-            },
+              {
+                text: 'TypeScript',  
+                link: '/docs/ts',
+                activeMatch: '^/docs/ts',  // 该元素在当前路由路径是 /docs/ 开头时激活, 支持正则表达式
+              },
             ],
         },
 
       {
-        text: '分类2',
+        text: '后端笔记',
+        children: [
+          {
+            text: 'JavaSE',
+            link: '/docs/javase',
+            activeMatch: '/docs/javase'
+          },
+          {
+            text: 'Spring',  
+            link: '/docs/spring',
+            activeMatch: '^/docs/spring',
+          },
+          {
+            text: 'SpringMVC',
+            link: '/docs/springmvc',
+            activeMatch: '/docs/springmvc'
+          }
+        ],
+      },
+      {
+        text: '项目相关',
         children: [
           {
             text: '建站相关2',
             link: '/server2/',
             activeMatch: '/',   // 该元素将一直处于激活状态
-          },
-          {
-            text: '个人随笔2',  
-            link: '/personal2/',
-            activeMatch: '^/foo/',  // 该元素在当前路由路径是 /foo/ 开头时激活, 支持正则表达式
-          },
+          }
         ],
       },
     ],
