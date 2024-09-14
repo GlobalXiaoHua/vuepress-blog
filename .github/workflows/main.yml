@@ -1,4 +1,4 @@
-name: docs
+name: auto_deploy
 
 on:
   # 每当 push 到 main 分支时触发部署
@@ -16,9 +16,12 @@ jobs:
         with:
           # “最近更新时间” 等 git 日志相关信息，需要拉取全部提交记录
           fetch-depth: 0
-      - run: node -v
-      - run: npm install
-      - run: npm run docs:build
+      # npm初始化    
+      - name: Setup npm
+        run: npm install
+      # 项目打包
+      - name: Build VuePress site
+        run: npm run docs:build
       # 查看 workflow 的文档来获取更多信息
       # @see https://github.com/crazy-max/ghaction-github-pages
       - name: Deploy to GitHub Pages
@@ -30,5 +33,5 @@ jobs:
           build_dir: docs/.vuepress/dist
         env:
           # @see https://docs.github.com/cn/actions/reference/authentication-in-a-workflow#about-the-github_token-secret
-          GITHUB_TOKEN: ${{ secrets.VUEPRESSBLOG }}
+          GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN_VUEPRESS_BLOG }}
             
