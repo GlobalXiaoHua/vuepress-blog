@@ -15,6 +15,11 @@ export default defineUserConfig({
                 link: '/docs/ts',
                 activeMatch: '^/docs/ts',  // 该元素在当前路由路径是 /docs/ 开头时激活, 支持正则表达式
               },
+              {
+                text: 'Vue3',  
+                link: '/docs/vue3',
+                activeMatch: '^/docs/vue3',  // 该元素在当前路由路径是 /docs/ 开头时激活, 支持正则表达式
+              },
             ],
         },
 
@@ -40,13 +45,7 @@ export default defineUserConfig({
       },
       {
         text: '项目相关',
-        children: [
-          {
-            text: '建站相关2',
-            link: '/server2/',
-            activeMatch: '/',   // 该元素将一直处于激活状态
-          }
-        ],
+        children: [],
       },
     ],
   }),
