@@ -4,16 +4,20 @@ import pythonRoutes from './python.js'
 
 const navRoutes = [
   {
-    text: '前端课件',
+    text: '首页',
+    link: '/'
+  },
+  {
+    text: '前端笔记',
     children: frontRoutes
   },
 
   {
-    text: 'Java课件',
+    text: 'Java笔记',
     children: javaRoutes
   },
   {
-    text: 'Python课件',
+    text: 'Python笔记',
     children: pythonRoutes
   }
 ]
